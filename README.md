@@ -2,7 +2,7 @@
 
 **Contribution Number:** 1  
 **Student:** Ben Khant  
-**Issue:** https://github.com/bcgov/cas-registration/issues/4702 
+**Issue:** https://github.com/bcgov/cas-registration/issues/4702  
 **Status:** Phase I Complete
 
 ---
