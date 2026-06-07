@@ -15,7 +15,7 @@ existing example to follow, and no one has claimed it yet.
 
 It also aligns with what I want to learn. I have a Python background but haven't worked 
 much with Django ORM patterns in a real production codebase, so building a custom 
-Manager from scratch felt like a practical way to close that gap while actually 
+Manager from scratch felt like a good way to learn while actually 
 contributing something useful to the project.
 
 ---
