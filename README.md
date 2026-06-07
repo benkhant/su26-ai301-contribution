@@ -1,15 +1,22 @@
-# Contribution [#]: [Issue Title]
+# Contribution 1: Tech Debt: Refactor Configuration-Dependent Models
 
 **Contribution Number:** 1  
 **Student:** Ben Khant  
-**Issue:** [[GitHub issue link]](https://github.com/bcgov/cas-registration/issues/4702)  
+**Issue:** https://github.com/bcgov/cas-registration/issues/4702 
 **Status:** Phase I Complete
 
 ---
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs explaining why this issue interests you, how it matches your skills/learning goals, what you hope to learn]
+I chose this issue because it felt like a realistic and meaningful first contribution. 
+The scope is clear, a maintainer already approved the approach and pointed to an 
+existing example to follow, and no one has claimed it yet.
+
+It also aligns with what I want to learn. I have a Python background but haven't worked 
+much with Django ORM patterns in a real production codebase, so building a custom 
+Manager from scratch felt like a practical way to close that gap while actually 
+contributing something useful to the project.
 
 ---
 
