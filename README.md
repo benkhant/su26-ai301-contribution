@@ -1,9 +1,9 @@
 # Contribution [#]: [Issue Title]
 
-**Contribution Number:** [1 / 2 / 3]  
-**Student:** [Ben Khant]  
-**Issue:** [GitHub issue link]  
-**Status:** [Phase I / Phase II / Phase III / Phase IV] [In Progress / Complete]
+**Contribution Number:** 1  
+**Student:** Ben Khant  
+**Issue:** [[GitHub issue link]](https://github.com/bcgov/cas-registration/issues/4702)  
+**Status:** Phase I Complete
 
 ---
 
