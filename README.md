@@ -32,25 +32,29 @@ a shared helper that does it once.
 
 ### Expected Behavior
 
-[Each affected model should have a custom Django Manager with a method that 
+Each affected model should have a custom Django Manager with a method that 
 wraps the date lookup logic internally. The rest of the codebase should 
 just pass in a date and get back the right record — without needing to 
-know the filter details.]
+know the filter details.
 
 ### Current Behavior
 
-[The same two filter conditions appear copy-pasted across multiple service 
+The same two filter conditions appear copy-pasted across multiple service 
 and test files:
 - `valid_from__valid_from__lte=self.valid_date`
 - `valid_to__valid_to__gte=self.valid_date`
 
 This means if the lookup logic ever needs to change, every copy across 
 the codebase has to be updated manually — which is error-prone and 
-harder to maintain.]
+harder to maintain.
 
 ### Affected Components
 
-[Which parts of the codebase are involved?]
+- `reporting/models/activity_json_schema.py` — needs a custom Manager
+- `reporting/models/activity_source_type_json_schema.py` — needs a custom Manager
+- `reporting/service/report_activity_save_service.py` — two query call sites to simplify
+- `reporting/tests/service/test_report_activity_save_service/infrastructure.py` — two call sites to update
+- `reporting/tests/service/test_report_activity_save_service/test_report_activity_save_service_with_real_data.py` — two call sites to update
 
 ---
 
