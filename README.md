@@ -3,7 +3,7 @@
 **Contribution Number:** 1  
 **Student:** Ben Khant  
 **Issue:** https://github.com/bcgov/cas-registration/issues/4702  
-**Status:** Phase I Complete
+**Status:** Phase II Complete
 
 ---
 
@@ -110,30 +110,62 @@ Setting up the local environment required resolving several issues:
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+The root cause is that the configuration-based date lookup logic is not 
+abstracted. Two models — `ActivityJsonSchema` and 
+`ActivitySourceTypeJsonSchema` — both use the default Django Manager, 
+which means any code that needs to query them by date has to manually 
+write out the full filter conditions every time. There is no shared 
+method that encapsulates this logic, leading to duplication across 
+service and test files.
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+Add a custom Django Manager to each affected model with a method that 
+wraps the `valid_from__valid_from__lte` and `valid_to__valid_to__gte` 
+filter logic internally. Then update all call sites in the service and 
+test files to use the new cleaner interface.
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** Multiple files repeat the same complex date filter when querying 
+configuration-dependent models. The fix is to encapsulate that logic 
+once in a custom Manager so no caller has to know the internal details.
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** The codebase already has `TimeStampedModelManager` in 
+`registration/models/time_stamped_model.py` as a reference. It extends 
+`models.Manager` and overrides queryset behavior. The same pattern will 
+be used to add a `get_by_date()` method.
 
-**Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+**Plan:** 
+1. Add a custom Manager to `reporting/models/activity_json_schema.py` 
+   with a `get_by_date(date)` method that filters by configuration date range
+2. Attach the Manager to the `ActivityJsonSchema` model
+3. Add the same custom Manager to 
+   `reporting/models/activity_source_type_json_schema.py`
+4. Attach it to the `ActivitySourceTypeJsonSchema` model
+5. Update `reporting/service/report_activity_save_service.py` lines 
+   79-80 and 112-113 to use the new Manager methods
+6. Update the two test files to use the new Manager methods
+7. Run `make test` to confirm all existing tests still pass
+8. Run `grep -rn "valid_from__valid_from__lte" .` to confirm no 
+   instances remain in service files
 
-**Implement:** [Link to your branch/commits as you work]
+**Implement:** Branch: https://github.com/benkhant/cas-registration/tree/fix-issue-4702
 
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+**Review:** 
+- Use `refactor:` prefix for commit messages per project conventions
+- Run `prek run --all-files` before submitting PR
+- Ensure no new tests are broken
+- Follow the existing code style in model files
 
-**Evaluate:** [How will you verify it works?]
+**Evaluate:** 
+- All existing tests pass after the refactor
+- The repeated query pattern no longer appears in service or test files
+- The Manager methods are covered by at least one unit test each
+- Running `grep -rn "valid_from__valid_from__lte" .` returns no results 
+  in service files
 
 ---
 
