@@ -24,15 +24,29 @@ contributing something useful to the project.
 
 ### Problem Description
 
-[In your own words, what's broken or missing?]
+The codebase has several models that are tied to a configuration period — 
+meaning a record is only valid within a specific date range. Whenever the 
+code needs to fetch one of these models for a given date, it manually 
+writes out the same long filter conditions every time instead of having 
+a shared helper that does it once.
 
 ### Expected Behavior
 
-[What should happen?]
+[Each affected model should have a custom Django Manager with a method that 
+wraps the date lookup logic internally. The rest of the codebase should 
+just pass in a date and get back the right record — without needing to 
+know the filter details.]
 
 ### Current Behavior
 
-[What actually happens?]
+[The same two filter conditions appear copy-pasted across multiple service 
+and test files:
+- `valid_from__valid_from__lte=self.valid_date`
+- `valid_to__valid_to__gte=self.valid_date`
+
+This means if the lookup logic ever needs to change, every copy across 
+the codebase has to be updated manually — which is error-prone and 
+harder to maintain.]
 
 ### Affected Components
 
