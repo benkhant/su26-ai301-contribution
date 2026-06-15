@@ -61,21 +61,49 @@ harder to maintain.
 ## Reproduction Process
 
 ### Environment Setup
+Setting up the local environment required resolving several issues:
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+- **Postgres version conflict:** The machine had Homebrew PostgreSQL 14 
+  installed, but the project uses PostgreSQL 16 via asdf. Fixed by setting 
+  `asdf set -u postgres 16.2` and updating the shell config to prioritize 
+  asdf shims over Homebrew binaries.
+
+- **Missing ICU library:** Postgres 16 build failed with 
+  `configure: error: ICU library not found`. Fixed by running 
+  `brew install icu4c` and `brew link icu4c@78 --force`.
+
+- **Missing pango library:** Running `make migrate` failed because 
+  `weasyprint` could not load `libpango-1.0-0`. Fixed by running 
+  `brew install pango`.
+
+- **Missing Postgres role:** `make create_db` failed with 
+  `role "aungminkhant" does not exist`. Fixed by connecting as the 
+  `postgres` superuser and creating the role manually.
+
+- **1Password env values:** The setup docs reference a private 1Password 
+  vault for env values. Resolved by filling in safe local defaults for 
+  non-sensitive variables (database name, host, port, debug flags) and 
+  leaving external service credentials empty since they are not needed 
+  for backend model work.
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. Clone the repository and navigate to `bc_obps/`
+2. Run `grep -rn "valid_from__valid_from__lte" .` in the terminal
+3. Observe the same filter pattern repeated across multiple service
+4. Open `reporting/service/report_activity_save_service.py` and note 
+   the pattern at lines 79-80 and 112-113
+5. Confirm no custom Manager exists on `ActivityJsonSchema` or 
+   `ActivitySourceTypeJsonSchema` by checking their model files
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
-- **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
-
+- **Branch:** [https://github.com/benkhant/cas-registration/tree/fix-issue-4702](https://github.com/benkhant/cas-registration/tree/fix-issue-4702)
+- **My findings:** The repeated query pattern appears in 2 service files 
+  and 2 test files across 6 total call sites. Both affected models 
+  (`ActivityJsonSchema` and `ActivitySourceTypeJsonSchema`) currently 
+  use the default Django Manager with no custom query abstraction.
+  
 ---
 
 ## Solution Approach
