@@ -3,7 +3,7 @@
 **Contribution Number:** 1  
 **Student:** Ben Khant  
 **Issue:** https://github.com/bcgov/cas-registration/issues/4702  
-**Status:** Phase III Complete
+**Status:** Phase IV Complete
 
 ---
 
@@ -268,15 +268,21 @@ themselves, and nowhere else in the codebase.
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** https://github.com/bcgov/cas-registration/pull/4835
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:** Added a custom Django Manager with a `get_by_date()` 
+method to `ActivityJsonSchema` and `ActivitySourceTypeJsonSchema`, 
+replacing six repeated manual query filters across the service and test 
+files with a single shared, reusable method.
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- 2026-06-21: Copilot's automated review completed with no comments 
+  flagged across all 7 changed files
+- 2026-06-21: Posted a comment tagging the maintainer (@Sepehr-Sobhani) 
+  who originally approved this approach on issue #4702, requesting a 
+  review
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** Awaiting review
 
 ---
 
