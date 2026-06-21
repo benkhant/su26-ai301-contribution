@@ -3,7 +3,7 @@
 **Contribution Number:** 1  
 **Student:** Ben Khant  
 **Issue:** https://github.com/bcgov/cas-registration/issues/4702  
-**Status:** Phase II Complete
+**Status:** Phase III Complete
 
 ---
 
@@ -173,37 +173,97 @@ be used to add a `get_by_date()` method.
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [x] Test case 1: `test_get_by_date` — confirms `ActivityJsonSchema.objects.get_by_date()` 
+  returns the correct schema when given a date within the configuration's valid range
+- [x] Test case 2: `test_get_by_date_no_match` — confirms `ActivityJsonSchema.objects.get_by_date()` 
+  raises `DoesNotExist` when given a date outside the configuration's valid range
+- [x] Test case 3: `test_get_by_date` and `test_get_by_date_no_match` — same two scenarios 
+  repeated for `ActivitySourceTypeJsonSchema`, with the additional `source_type` parameter
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+- [x] Integration scenario 1: `test_creates_report_activity_data` in 
+  `test_report_activity_save_service_with_real_data.py` — confirms the full 
+  `ReportActivitySaveService.save()` workflow still produces correct results 
+  after switching to the new Manager methods
+- [x] Integration scenario 2: Full test suite for `test_report_activity_save_service/` 
+  (39 tests) confirms no regressions across the entire save service
 
 ### Manual Testing
 
-[What you tested manually and results]
+Ran `grep -rn "valid_from__valid_from__lte" .` and 
+`grep -rn "valid_to__valid_to__gte" .` after all changes to confirm the 
+repeated filter pattern only exists inside the two new Manager methods 
+themselves, and nowhere else in the codebase.
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week 1 Progress
 
-[What you built this week, challenges faced, decisions made]
+- Completed Phase I: selected the issue, ran the selection checklist, 
+  claimed the issue with a comment, and posted in the course portal
+  
+### Week 2 Progress
 
-### Week [Y] Progress
+- Completed Phase II: reviewed the codebase, traced the repeated query 
+  pattern across files, studied the existing `TimeStampedModelManager` 
+  pattern, and wrote the UMPIRE implementation plan
+- Set up local development environment, resolving Postgres version 
+  conflicts, missing ICU/pango system libraries, and Postgres role 
+  creation issues
+- Created `fix-issue-4702` branch
 
-[Continue documenting as you work]
+### Week 3 Progress
+
+- Added `ActivityJsonSchemaManager` with `get_by_date()` to `activity_json_schema.py`
+- Added `ActivitySourceTypeJsonSchemaManager` with `get_by_date()` to 
+  `activity_source_type_json_schema.py`
+- Resolved mypy type errors on the Manager methods using `typing.cast`
+- Updated `report_activity_save_service.py` to use both new Manager methods
+- Updated test infrastructure and assertions to use the new Manager methods
+- Added 4 new dedicated unit tests covering both match and no-match cases 
+  for both models
+- Ran full test suite (39 + 10 + 10 tests) — all passed
+- Cleaned up commit history with interactive rebase to fix a typo in one 
+  commit message
+- Confirmed no unnecessary changes via `git diff develop --stat`
+- Updated Contribution README with implementation summary
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:**
+  - `reporting/models/activity_json_schema.py`
+  - `reporting/models/activity_source_type_json_schema.py`
+  - `reporting/service/report_activity_save_service.py`
+  - `reporting/tests/service/test_report_activity_save_service/infrastructure.py`
+  - `reporting/tests/service/test_report_activity_save_service/test_report_activity_save_service_with_real_data.py`
+  - `reporting/tests/models/test_activity_json_schema.py`
+  - `reporting/tests/models/test_activity_source_type_json_schema.py`
 
+- **Key commits:**
+  - [refactor: add custom manager to ActivityJsonSchema](https://github.com/benkhant/cas-registration/commit/ba37dea5d26802930abb73b884c6f0ec039032eb)
+  - [refactor: add custom manager to ActivitySourceTypeJsonSchema](https://github.com/benkhant/cas-registration/commit/dd12684b07f755e1e9e891511dde0afea3283c1d)
+  - [refactor: update service to use manager methods](https://github.com/benkhant/cas-registration/commit/e65a18e431b8dc8b526c61fbd8bfd99dc8529d94)
+  - [test: update tests to use manager methods](https://github.com/benkhant/cas-registration/commit/ef22825ab13e1635915484583fdf56f9abff2bed)
+  - [test: add unit tests for ActivityJsonSchema custom manager](https://github.com/benkhant/cas-registration/commit/0f17bfdfc11724980ebe7c127dbbb3c026941964)
+  - [test: add unit tests for ActivitySourceTypeJsonSchema custom manager](https://github.com/benkhant/cas-registration/commit/6cecad1f126bef31fe3418a4b228e002e3f5f937)
+
+- **Approach decisions:**
+  - Used `typing.cast()` instead of an intermediate variable assignment to 
+    satisfy mypy's strict return type checking on the Manager methods, since 
+    Django's generic `.get()` return type doesn't automatically narrow to 
+    the specific model subclass
+  - Kept the test files' existing naming conventions consistent (camelCase 
+    in `test_activity_json_schema.py`, snake_case in 
+    `test_activity_source_type_json_schema.py`) rather than imposing a 
+    single style across both
+  - Chose test dates one year before/after the test fixture's own 
+    configuration range (e.g., `5024` vs `5025`) rather than arbitrary 
+    real-world dates, to keep the no-match test independent of any 
+    unrelated fixture data that may exist in the database
+    
 ---
 
 ## Pull Request
@@ -224,20 +284,39 @@ be used to add a `get_by_date()` method.
 
 ### Technical Skills Gained
 
-[What you learned technically]
+This was my first time working with Django's custom Manager pattern, 
+and it clicked once I saw how it just slots into the `.objects` interface 
+to hide repeated query logic behind a clean method. I also got more 
+comfortable with mypy on Django querysets — specifically why Django's 
+generic `.get()` doesn't automatically narrow to the right model type, 
+and how `typing.cast()` fixes that. On top of the code, I picked up a lot 
+of practical debugging experience just getting the environment running, 
+dealing with asdf, Postgres versions, and a couple of missing system 
+libraries on macOS.
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+The environment setup ended up being the hardest part, honestly. There 
+were several issues stacked on top of each other — a Postgres version 
+mismatch between Homebrew and asdf, a missing ICU library blocking the 
+Postgres build, a missing pango library blocking PDF generation, and a 
+missing Postgres role. I had to work through each one individually, 
+reading the actual error message carefully instead of guessing. On the 
+code side, getting mypy to accept the Manager's return type took a couple 
+of tries — first with type hints alone, then switching to `typing.cast()` 
+once that wasn't enough.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+I'd check the project's required tool versions (asdf, Postgres) before 
+running any setup commands, so I can catch version conflicts early 
+instead of debugging them after hitting build errors.
 
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- [bcgov/cas-registration docs folder](https://github.com/bcgov/cas-registration/tree/develop/docs)
+- [Django custom Managers documentation](https://docs.djangoproject.com/en/stable/topics/db/managers/)
+- `registration/models/time_stamped_model.py` — the existing `TimeStampedModelManager` pattern I used as a template
+- [mypy documentation on cast()](https://mypy.readthedocs.io/en/stable/type_narrowing.html)
