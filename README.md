@@ -312,11 +312,29 @@ code side, getting mypy to accept the Manager's return type took a couple
 of tries — first with type hints alone, then switching to `typing.cast()` 
 once that wasn't enough.
 
+The biggest challenge though wasn't technical at all. After fully 
+implementing the fix, writing tests, and opening a clean PR, the 
+maintainer replied that the repo isn't currently accepting contributions 
+from external contributors, and closed it. That stung a bit, since the 
+code itself was solid, Copilot's automated review flagged zero issues 
+across all 7 files, but it just came down to a contribution policy I did
+not know about beforehand. The maintainer was kind about it 
+though, which helped.
+
 ### What I'd Do Differently Next Time
 
-I'd check the project's required tool versions (asdf, Postgres) before 
-running any setup commands, so I can catch version conflicts early 
-instead of debugging them after hitting build errors.
+I'd check the project's required tool versions before running any setup 
+commands, so I can catch version conflicts early instead of debugging 
+them after hitting build errors. But more importantly, I'd try to check 
+whether a project is actually open to outside contributions before 
+investing real time in it, maybe by seeing if non-team contributors have 
+gotten PRs merged recently. A "good first issue" label doesn't always 
+mean the team is currently accepting outside PRs, especially for 
+something like a government codebase.
+
+Even though this one didn't get merged, I still walked away with a real 
+working implementation, a clean review, and a much better sense of what 
+contributing to a production Django codebase actually looks like.
 
 ---
 
