@@ -281,8 +281,10 @@ files with a single shared, reusable method.
 - 2026-06-21: Posted a comment tagging the maintainer (@Sepehr-Sobhani) 
   who originally approved this approach on issue #4702, requesting a 
   review
+- 2026-06-23: Sepehr-Sobhani replied that the repo is not currently 
+  accepting contributions from external contributors, and closed the PR
 
-**Status:** Awaiting review
+**Status:** Closed — not accepted (external contribution policy)
 
 ---
 
