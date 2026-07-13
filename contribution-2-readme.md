@@ -3,7 +3,7 @@
 **Contribution Number:** 2  
 **Student:** Ben Khant  
 **Issue:** https://github.com/mcgill-courses/mcgill.courses/issues/377  
-**Status:** Phase II Complete
+**Status:** Phase III Complete
 
 ---
 
@@ -183,38 +183,68 @@ reuse existing components, keep changes minimal and focused.
 ## Testing Strategy
 
 ### Unit Tests
-
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [x] Search input renders above the Sort By and Instructor dropdowns
+- [x] Typing a keyword calls setSearchQuery to update search state
+- [x] Clicking Reset clears the search query back to empty string
 
 ### Integration Tests
-
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+- [ ] Search filters review list correctly by keyword in the browser
+- [ ] Ratings/stats chart is unaffected while searching
+- [ ] Search clears when navigating to a different course page
+- [ ] Search works alongside instructor filter and sort simultaneously
+- [ ] Works correctly in both desktop and mobile layouts
+- [ ] Works correctly in dark mode
 
 ### Manual Testing
-
-[What you tested manually and results]
+Manual testing was interrupted by a database volume wipe during 
+environment setup (`docker compose down -v` removed all seeded data). 
+Database re-seeding is in progress. All automated tests (218/218) pass 
+and ESLint is clean. Manual verification will be completed before the 
+PR is opened.
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week 1 Progress
+Set up the full local development environment — installed Docker, 
+Rust/Cargo, and pnpm, got MongoDB running via Docker, seeded the 
+database, and got the React frontend running at localhost:5173. 
+Explored the codebase to understand how `flexsearch` is already used 
+for course search and how the review filter component works.
 
-[What you built this week, challenges faced, decisions made]
-
-### Week [Y] Progress
-
-[Continue documenting as you work]
+### Week 2 Progress
+Implemented the full-text search feature. Added `searchQuery` state 
+to `course-page.tsx` and passed it to both `ReviewFilter` instances. 
+Modified `review-filter.tsx` to build a `flexsearch` index from review 
+content, filter reviews by search query before the existing 
+sort/instructor filter runs, and added the search input UI using the 
+existing `SearchBar` component. Added a test file with 3 tests covering 
+search rendering, filtering, and reset behavior. All 218 tests pass and 
+ESLint is clean.
 
 ### Code Changes
+- **Files modified:**
+  - `client/src/components/review-filter.tsx`
+  - `client/src/pages/course-page.tsx`
+  - `client/src/components/review-filter.test.tsx` (new file)
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Key commits:**
+  - `f0a5540` — feat: add client-side full-text search for reviews
+  - `37a5950` — test: add tests for review search filter
 
+- **Approach decisions:**
+  - Used `flexsearch` with `tokenize: 'forward'` to match the existing 
+    course search pattern — no new libraries needed
+  - Indexed only `review.content` since instructor filtering already 
+    has a dedicated dropdown
+  - Reused the existing `SearchBar` component for consistent UI styling
+  - Managed `searchQuery` state in `course-page.tsx` (parent) and 
+    passed it down to `ReviewFilter` (child) following React's 
+    standard pattern for shared state
+  - Search clears via the existing `reset` function which already runs 
+    on course navigation — no extra logic needed
+    
 ---
 
 ## Pull Request
@@ -234,24 +264,46 @@ reuse existing components, keep changes minimal and focused.
 ## Learnings & Reflections
 
 ### Technical Skills Gained
-
-[What you learned technically]
+- Learned how `flexsearch` works — building an index, adding items,
+  and querying it for fast client-side search
+- Got comfortable reading an unfamiliar TypeScript/React codebase and
+  understanding how state flows between parent and child components
+- Learned how to set up a full-stack local dev environment with Docker,
+  Rust/Cargo, and pnpm running together
 
 ### Challenges Overcome
-
-[What was hard and how you solved it]
+- The README's `cargo run` command was outdated — used `--help` to
+  discover the correct syntax rather than getting stuck
+- The database got wiped accidentally with `docker compose down -v` —
+  learned the difference between `down` and `down -v` the hard way
+- `SearchBar` required extra props (`searchSelected`, `setSearchSelected`)
+  that weren't obvious from the component name — reading the source
+  code directly resolved it quickly
+- Getting the replica set to initialize correctly required waiting
+  longer after Docker started before running cargo
 
 ### What I'd Do Differently Next Time
-
-[Reflection on your process]
+- Read component source files before using them to understand required
+  props upfront, not after hitting TypeScript errors
+- Never use `docker compose down -v` unless intentionally wiping data —
+  use `docker compose down` only
+- Test in the browser earlier in the process rather than waiting until
+  all the code is written
+- Check the existing test files before writing implementation code, so
+  the test patterns are familiar from the start
 
 ---
 
 ## Resources Used
 
-- [PR #526](https://github.com/mcgill-courses/mcgill.courses/pull/526) — 
-  previous attempt at this issue, contains valuable maintainer feedback on 
+## Resources Used
+- [PR #526](https://github.com/mcgill-courses/mcgill.courses/pull/526) —
+  previous attempt at this issue, contains valuable maintainer feedback on
   approach (flexsearch vs fuse, UI style, known bugs)
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- [flexsearch docs](https://github.com/nextapps-de/flexsearch) —
+  used to understand Index configuration and tokenize options
+- [search-index.ts](https://github.com/mcgill-courses/mcgill.courses/blob/master/client/src/lib/search-index.ts) —
+  existing flexsearch usage in the codebase, used as reference for
+  the same pattern in review search
+- [React Testing Library docs](https://testing-library.com/docs/react-testing-library/intro/) —
+  referenced for render, screen, waitFor, and userEvent patterns
