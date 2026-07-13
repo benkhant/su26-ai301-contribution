@@ -295,8 +295,6 @@ ESLint is clean.
 ---
 
 ## Resources Used
-
-## Resources Used
 - [PR #526](https://github.com/mcgill-courses/mcgill.courses/pull/526) —
   previous attempt at this issue, contains valuable maintainer feedback on
   approach (flexsearch vs fuse, UI style, known bugs)
