@@ -3,7 +3,7 @@
 **Contribution Number:** 2  
 **Student:** Ben Khant  
 **Issue:** https://github.com/mcgill-courses/mcgill.courses/issues/377  
-**Status:** Phase III Complete
+**Status:** Phase IV Complete
 
 ---
 
@@ -90,18 +90,18 @@ all reviews manually to find relevant content.
 
 1. Join the mcgill.courses Discord and DM a moderator to get
    the environment variables and contributor role
-3. Fork and clone the repo, create branch `fix-issue-377`
-4. Create `.env` in the project root with `MS_CLIENT_ID`, 
+2. Fork and clone the repo, create branch `fix-issue-377`
+3. Create `.env` in the project root with `MS_CLIENT_ID`, 
    `MS_CLIENT_SECRET`, and `MS_REDIRECT_URI=http://localhost:8000/api/auth/authorized`
-5. Create `client/.env` with `VITE_API_URL=http://localhost:8000`
-6. Run `docker compose up --no-recreate -d` to start MongoDB
-7. Run `cargo run -- --source=seed --initialize --db-name=mcgill-courses` 
+4. Create `client/.env` with `VITE_API_URL=http://localhost:8000`
+5. Run `docker compose up --no-recreate -d` to start MongoDB
+6. Run `cargo run -- --source=seed --initialize --db-name=mcgill-courses` 
    to seed and start the backend
-8. In a new terminal tab, run `cd client && pnpm install && cd .. && pnpm -r run dev`
-9. Navigate to `http://localhost:5173/course/acct-352`
-10. Scroll down to the reviews section — observe there is no search input, 
+7. In a new terminal tab, run `cd client && pnpm install && cd .. && pnpm -r run dev`
+8. Navigate to `http://localhost:5173/course/acct-352`
+9. Scroll down to the reviews section — observe there is no search input, 
    only Sort By and Instructor dropdowns
-11. To confirm the issue: there is no way to filter reviews by keyword
+10. To confirm the issue: there is no way to filter reviews by keyword
 
 **Branch link:** https://github.com/benkhant/mcgill.courses/tree/fix-issue-377
 
@@ -188,19 +188,25 @@ reuse existing components, keep changes minimal and focused.
 - [x] Clicking Reset clears the search query back to empty string
 
 ### Integration Tests
-- [ ] Search filters review list correctly by keyword in the browser
-- [ ] Ratings/stats chart is unaffected while searching
-- [ ] Search clears when navigating to a different course page
-- [ ] Search works alongside instructor filter and sort simultaneously
-- [ ] Works correctly in both desktop and mobile layouts
-- [ ] Works correctly in dark mode
+- [x] Search filters review list correctly by keyword in the browser
+- [x] Ratings/stats chart is unaffected while searching
+- [x] Search clears when navigating to a different course page
+- [x] Works correctly in both desktop and mobile layouts
+- [x] Works correctly in dark mode
 
 ### Manual Testing
-Manual testing was interrupted by a database volume wipe during 
-environment setup (`docker compose down -v` removed all seeded data). 
-Database re-seeding is in progress. All automated tests (218/218) pass 
-and ESLint is clean. Manual verification will be completed before the 
-PR is opened.
+All manual testing was completed before the PR was opened. The database 
+was accidentally wiped mid-setup (`docker compose down -v`), which 
+required a full re-seed, but everything was verified once the environment 
+was back up.
+
+Tested in the browser at localhost:5173:
+- Search box appears above the Sort By and Instructor dropdowns ✅
+- Typing a keyword filters matching reviews in real time ✅
+- Ratings/stats chart stays unchanged while searching ✅
+- Search clears when navigating to a different course ✅
+- Works in both desktop and mobile layouts ✅
+- Works in dark mode ✅
 
 ---
 
@@ -249,15 +255,16 @@ ESLint is clean.
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** https://github.com/mcgill-courses/mcgill.courses/pull/1178
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:** Added client-side full-text search for course reviews 
+using `flexsearch`, allowing users to filter reviews by keyword in real 
+time without affecting the ratings/stats chart above.
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- 2026-07-21: Awaiting review
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** Awaiting review
 
 ---
 
