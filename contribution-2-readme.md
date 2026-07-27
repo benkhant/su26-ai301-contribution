@@ -234,10 +234,19 @@ ESLint is clean.
   - `client/src/components/review-filter.tsx`
   - `client/src/pages/course-page.tsx`
   - `client/src/components/review-filter.test.tsx` (new file)
+  - `client/src/components/course-review.tsx`
+  - `client/src/components/course-review.test.tsx`
 
 - **Key commits:**
   - `f0a5540` — feat: add client-side full-text search for reviews
   - `37a5950` — test: add tests for review search filter
+  - `dfc70eb` — fix: prevent search from affecting course ratings chart
+  - `5a39c8a` — fix: handle null return from flexsearch Index.search
+  - `533eec4` — fix: clear search query immediately on course navigation
+  - `4c359ea` — fix: simplify search result filtering and formatting
+  - `fecd90e` — feat: highlight matched search terms in reviews
+  - `6adf89d` — test: verify actual filtered results in search filter test
+  - `c5e8f1f` — fix: keep per-instructor stats independent of search filtering
 
 - **Approach decisions:**
   - Used `flexsearch` with `tokenize: 'forward'` to match the existing 
@@ -262,9 +271,19 @@ using `flexsearch`, allowing users to filter reviews by keyword in real
 time without affecting the ratings/stats chart above.
 
 **Maintainer Feedback:**
-- 2026-07-21: Awaiting review
 
-**Status:** Awaiting review
+`39bytes` left four points on review: highlight matched search terms, 
+simplify some unnecessary filtering logic, fix a CI formatting issue, 
+and explain why the ratings chart's data source changed. Copilot 
+separately flagged a test that only checked a setter fired, not that 
+filtering actually worked.
+
+A day after those were addressed, `39bytes` followed up: the chart fix 
+had accidentally removed a working feature, per-instructor stats 
+filtering, that existed before search was added.
+
+**Status:** Approved by `39bytes`, blocked on an unrelated CI 
+infrastructure issue. Not yet merged.
 
 ---
 
