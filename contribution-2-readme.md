@@ -282,8 +282,20 @@ A day after those were addressed, `39bytes` followed up: the chart fix
 had accidentally removed a working feature, per-instructor stats 
 filtering, that existed before search was added.
 
+After that fix got approved, the PR hit a new blocker: `CI / server` and 
+`CI / coverage` started failing. Dug into the logs and traced it to a 
+panic in shared backend test setup code (`src/state.rs:69`), nothing to 
+do with any file this PR actually touched. Synced the branch with 
+`master` a couple of times over the last week just to check whether it 
+had already been fixed upstream, it hadn't, same failure both times, 
+even after `master` picked up several unrelated merges from `terror` 
+during that stretch. After a week of silence, I sent a polite follow-up 
+tagging both `39bytes` and `terror`, since `terror` had been 
+the more active maintainer lately.
+
 **Status:** Approved by `39bytes`, blocked on an unrelated CI 
-infrastructure issue. Not yet merged.
+infrastructure issue. Followed up after a week of no response, 
+currently waiting on a maintainer reply. Not yet merged.
 
 ---
 
