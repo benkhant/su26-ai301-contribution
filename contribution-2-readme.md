@@ -293,9 +293,15 @@ during that stretch. After a week of silence, I sent a polite follow-up
 tagging both `39bytes` and `terror`, since `terror` had been 
 the more active maintainer lately.
 
+**Week of Aug 3–9 update:** No response yet from either maintainer after 
+the follow-up. Not sending a second follow-up yet, since it's only 
+been about a week since the last follow up, planning to give it a bit more 
+time before checking in again.
+
 **Status:** Approved by `39bytes`, blocked on an unrelated CI 
-infrastructure issue. Followed up after a week of no response, 
-currently waiting on a maintainer reply. Not yet merged.
+infrastructure issue. Followed up after one week of no response; as of 
+this check-in, a second week has passed with still no reply. Not yet 
+merged.
 
 ---
 
